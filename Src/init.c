@@ -136,13 +136,70 @@ void pwm_init(void)   //TIM1 CH1 PA8 CH2 PA9 CH3 PA10
 	  GPIOA->CRH |=  (GPIO_CRH_MODE10_1 | GPIO_CRH_MODE10_0);  // Output 50 MHz
 	  GPIOA->CRH |=  (GPIO_CRH_CNF10_1);
 
-	  // step 2 configrung the timer base for 20khz PWM
+
+	  // step 3 configrung the timer base for 20khz PWM
 	  // F_pwm=F_clk/(arr+1)*(psc+1)
 
 	  TIM1->PSC=0; 	        // Prescaler = 0
 	  TIM1->ARR=3599;       // Auto-reload = 3599 → 20 kHz
 
-	  //step 3 PWM mode for ch1 , ch2 ch3
-	  TIM1->CCMR1
+
+	  //step 4 PWM mode for ch1 , ch2 ch3
+	  TIM1->CCMR1 &= ~(TIM_CCMR1_OC1M_Msk | TIM_CCMR1_OC2M_Msk | TIM_CCMR2_OC3M_Msk);
+	  TIM1->CCMR1|=(TIM_CCMR1_OC1M_1 |TIM_CCMR1_OC1M_2);    //PWM mode1 ch1
+	  TIM1->CCMR1|=(TIM_CCMR1_OC2M_1 |TIM_CCMR1_OC2M_2);    //PWM mode1 ch2
+	  TIM1->CCMR2|=(TIM_CCMR2_OC3M_1 |TIM_CCMR2_OC3M_2);    //PWM mode1 ch3
+
+	  //step 5 enble preload for each channel and ARR
+	  TIM1->CCMR1|=TIM_CCMR1_OC1PE;
+	  TIM1->CCMR1|=TIM_CCMR1_OC2PE;
+	  TIM1->CCMR2|=TIM_CCMR2_OC3PE;
+	  TIM1->CR1|=TIM_CR1_ARPE;     // autoreload preload enable
+
+	  //step 6 enabling the channel's
+	  TIM1->CCER|=TIM_CCER_CC1E;      //ch1
+	  TIM1->CCER|=TIM_CCER_CC2E;	  //ch2
+	  TIM1->CCER|=TIM_CCER_CC3E;	  //ch3
+
+	  //step 7 enabling the timer
+	  TIM1->BDTR|=TIM_BDTR_MOE;        //it should be done for advance timers
+	  TIM1->CR1|=TIM_CR1_CEN;          //timer enabled
+
 }
+
+//channel 3 PA3
+void adc_init(void)
+{
+	// step1 Enable clock
+	 RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;   // GPIOA
+	 RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;   // ADC1
+
+	 //step 2 configure PA3 as analog
+	 GPIOA->CRL &= ~(GPIO_CRL_MODE3 | GPIO_CRL_CNF3);
+
+
+	 //step 3 ADC prescaler  ADC max 14mhz , here 12Mhz
+	 RCC->CFGR &= ~RCC_CFGR_ADCPRE;
+	 RCC->CFGR |= RCC_CFGR_ADCPRE_DIV6;
+
+	 //step 4 set sampling time ch3-> 55.5 cycles (note total sample time =12.5 cycles +sampling cycles)
+	 ADC1->SMPR2 &= ~ADC_SMPR2_SMP3;
+	 ADC1->SMPR2 |= (ADC_SMPR2_SMP3_1 | ADC_SMPR2_SMP3_0);
+
+	 //step 5 configure number of conversion , and channel
+	 ADC1->SQR1 = 0;        // L=0 → 1 conversion, SQR1 describes number of conversion
+	 ADC1->SQR3 = 3;        // First conversion ch3 SQ1[4:0]=3
+
+	 //step 6 power on  and calibrate
+	 ADC1->CR2 = ADC_CR2_ADON;
+	 for (volatile short i = 0; i < 1000; i++);
+
+	 //calibration
+	 ADC1->CR2 |= ADC_CR2_CAL;
+	 while (ADC1->CR2 & ADC_CR2_CAL);
+
+
+
+}
+
 
