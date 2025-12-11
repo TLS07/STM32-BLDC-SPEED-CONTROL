@@ -14,7 +14,8 @@
  * the corresponding PR bit is set to 1, indicating that an interrupt is waiting to be serviced.
  * =>To clear a pending bit, you must write a 1 to that bit (write-1-to-clear).
  * =>it understand intterupt if bit is set by hardware or software*/
-void EXTI0_IRQHAndler(void)
+
+void EXTI0_IRQHandler(void)
 {
 	if(EXTI->PR & EXTI_PR_PR0)
 	{
@@ -24,7 +25,7 @@ void EXTI0_IRQHAndler(void)
 	}
 }
 
-void EXTI1_IRQHAndler(void)
+void EXTI1_IRQHandler(void)
 {
 	if(EXTI->PR & EXTI_PR_PR1)
 	{
@@ -34,7 +35,7 @@ void EXTI1_IRQHAndler(void)
 	}
 }
 
-void EXTI2_IRQHAndler(void)
+void EXTI2_IRQHandler(void)
 {
 	if(EXTI->PR & EXTI_PR_PR2)
 	{
@@ -42,5 +43,12 @@ void EXTI2_IRQHAndler(void)
 		hall_state=read_hall();
 		commutate(hall_state);
 	}
+}
+
+//functions to read hall sensor state during interrupt
+inline uint8_t read_hall(void)
+{
+	uint8_t raw=(GPIOA->IDR & 0x07);    // only 3 bits 0b111 H3 H2 H1
+	return (~raw)&0x07;                 // bcz sensors are active low
 }
 
