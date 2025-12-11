@@ -112,3 +112,37 @@ void low_side(void)
 
 }
 
+void pwm_init(void)   //TIM1 CH1 PA8 CH2 PA9 CH3 PA10
+{
+	//step 1 enable the clock
+	RCC->APB2ENR|=RCC_APB2ENR_IOPAEN;   //GPIOA Clock
+	RCC->APB2ENR|=RCC_APB2ENR_AFIOEN;    // AFIO clock
+	RCC->APB2ENR|=RCC_APB2ENR_TIM1EN;    //TIM1 clock
+
+	//step 2  Configure PA8, PA9, PA10 as AF push-pull, 50 MHz
+
+	  //PA8 TIM1->CH1
+	  GPIOA->CRH &= ~(GPIO_CRH_MODE8 | GPIO_CRH_CNF8);
+	  GPIOA->CRH |=  (GPIO_CRH_MODE8_1 | GPIO_CRH_MODE8_0);    // Output 50 MHz
+	  GPIOA->CRH |=  (GPIO_CRH_CNF8_1);
+
+	  //PA9 TIM1->CH2
+	  GPIOA->CRH &= ~(GPIO_CRH_MODE9 | GPIO_CRH_CNF9);
+	  GPIOA->CRH |=  (GPIO_CRH_MODE9_1 | GPIO_CRH_MODE9_0);    // Output 50 MHz
+	  GPIOA->CRH |=  (GPIO_CRH_CNF9_1);
+
+	 //PA10 TIM1->CH3
+	  GPIOA->CRH &= ~(GPIO_CRH_MODE10 | GPIO_CRH_CNF10);
+	  GPIOA->CRH |=  (GPIO_CRH_MODE10_1 | GPIO_CRH_MODE10_0);  // Output 50 MHz
+	  GPIOA->CRH |=  (GPIO_CRH_CNF10_1);
+
+	  // step 2 configrung the timer base for 20khz PWM
+	  // F_pwm=F_clk/(arr+1)*(psc+1)
+
+	  TIM1->PSC=0; 	        // Prescaler = 0
+	  TIM1->ARR=3599;       // Auto-reload = 3599 → 20 kHz
+
+	  //step 3 PWM mode for ch1 , ch2 ch3
+	  TIM1->CCMR1
+}
+
