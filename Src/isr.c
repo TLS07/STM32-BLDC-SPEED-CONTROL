@@ -48,7 +48,7 @@ void EXTI2_IRQHandler(void)
 //functions to read hall sensor state during interrupt
 inline uint8_t read_hall(void)
 {
-	uint8_t raw=(GPIOA->IDR & 0x07);    // only 3 bits 0b111 H3 H2 H1
-	return (~raw)&0x07;                 // bcz sensors are active low
+	return (uint8_t) (GPIOA->IDR & 0x07);    // only 3 bits 0b111 H3 H2 H1
+
 }
 
