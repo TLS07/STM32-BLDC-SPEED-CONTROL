@@ -51,6 +51,12 @@ default.size.stdout \
 OBJDUMP_LIST += \
 BLDC_MOTOR_CONTROL.list \
 
+OBJCOPY_HEX += \
+BLDC_MOTOR_CONTROL.hex \
+
+OBJCOPY_BIN += \
+BLDC_MOTOR_CONTROL.bin \
+
 
 # All Target
 all: main-build
@@ -74,12 +80,22 @@ BLDC_MOTOR_CONTROL.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DE
 	@echo 'Finished building: $@'
 	@echo ' '
 
+BLDC_MOTOR_CONTROL.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "BLDC_MOTOR_CONTROL.hex"
+	@echo 'Finished building: $@'
+	@echo ' '
+
+BLDC_MOTOR_CONTROL.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "BLDC_MOTOR_CONTROL.bin"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) BLDC_MOTOR_CONTROL.elf BLDC_MOTOR_CONTROL.list BLDC_MOTOR_CONTROL.map default.size.stdout
+	-$(RM) BLDC_MOTOR_CONTROL.bin BLDC_MOTOR_CONTROL.elf BLDC_MOTOR_CONTROL.hex BLDC_MOTOR_CONTROL.list BLDC_MOTOR_CONTROL.map default.size.stdout
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX) $(OBJCOPY_BIN)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'

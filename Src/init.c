@@ -4,7 +4,7 @@
  *  Created on: Dec 10, 2025
  *      Author: Admin
  */
-#include "stm32f1xx.h"
+#include "main.h"
 //clock initalization
 void clk_init(void)
 {
@@ -21,7 +21,7 @@ void clk_init(void)
 	RCC->CFGR|=RCC_CFGR_PLLSRC;            //HSE as source for PLL
 	RCC->CFGR&=~RCC_CFGR_PLLXTPRE;          // HSE not divided
 	RCC->CFGR &= ~RCC_CFGR_PLLMULL;         //clearing the bits
-	RCC->CFGR|=RCC_CFGR_PLLMUL9;            //8*9=72 mhz
+	RCC->CFGR|=RCC_CFGR_PLLMULL9;            //8*9=72 mhz
 
 	RCC->CFGR|=RCC_CFGR_HPRE_DIV1;          //APB2 not divided =>72mhz
 	RCC->CFGR|=RCC_CFGR_PPRE1_DIV2;        //APB1 divided by 2 =>36mhz
@@ -66,16 +66,23 @@ void hall_sensor_init(void)
 	AFIO->EXTICR[0] &= ~((0xF << 0) | (0xF << 4) | (0xF << 8));
 
 	//step 4 Mapping
-	AFIO->EXTICR[0]|=AFIO_EXTI0_PA;   //EXTI0 → PA0
-	AFIO->EXTICR[0]|=AFIO_EXTI1_PA;   //EXTI1 → PA1
-	AFIO->EXTICR[0]|=AFIO_EXTI2_PA;   //EXTI2 → PA2
+	AFIO->EXTICR[0]|=AFIO_EXTICR1_EXTI0_PA;   //EXTI0 → PA0
+	AFIO->EXTICR[0]|=AFIO_EXTICR1_EXTI1_PA;   //EXTI1 → PA1
+	AFIO->EXTICR[0]|=AFIO_EXTICR1_EXTI2_PA;   //EXTI2 → PA2
 
 	//step 5 enabling interrupt on EXTI lines
 	EXTI->IMR|=EXTI_IMR_MR0;    //PA0
 	EXTI->IMR|=EXTI_IMR_MR1;    //PA1
 	EXTI->IMR|=EXTI_IMR_MR2;    //PA2
 
-	//step 6 enabling interrupt to trigger on falling edge
+	//step 6 enabling interrupt to trigger on falling edge and rising edge
+
+	//rising edge
+	EXTI->RTSR|=EXTI_RTSR_TR0;
+	EXTI->RTSR|=EXTI_RTSR_TR1;
+	EXTI->RTSR|=EXTI_RTSR_TR2;
+
+	//falling edge
 	EXTI->FTSR|=EXTI_FTSR_TR0;
 	EXTI->FTSR|=EXTI_FTSR_TR1;
 	EXTI->FTSR|=EXTI_FTSR_TR2;

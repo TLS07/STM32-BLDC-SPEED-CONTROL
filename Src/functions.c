@@ -4,7 +4,7 @@
  *  Created on: Dec 11, 2025
  *      Author: Admin
  */
-#include"stm32f1xx.h"
+#include "main.h"
 
 uint16_t adc_read(void)
 {
@@ -14,22 +14,27 @@ uint16_t adc_read(void)
 
 	//wait till end of conversion
 	while(!(ADC1->SR & ADC_SR_EOC));
-	return (uint16_t) ADC1->DR;
+	return (uint16_t) ADC1->DR;        //readind Data register of adc it also clears eoc
 }
 
-void pwm_mapping(void){
+uint16_t pwm_mapping(void){
 
 	uint16_t adc_value=adc_read();
+	if(adc_value>4095)
+	{
+		adc_value=4095;
+	}
+
 	//duty = (adc * PWM_MAX)/ADC_MAx
-	uint32_t duty=((uint32_t)adc_value*3599)/4095;
+	uint16_t duty=(adc_value*(TIM1->ARR))/4095;
 
-	//updating value to caputre compare register
-	//CNT<<CCrx ->high vice versa low
-	//ARR vaue only for pwm period
+	return duty;
 
-	TIM1->CCR1=duty;    //channel 1
-	TIM1->CCR2=duty;	//channel 2
-	TIM1->CCR3=duty;	//channel 3
 }
 
+// Read hall states: PA0=HA, PA1=HB, PA2=HC
+uint8_t read_hall(void)
+{
+    return (uint8_t)(GPIOA->IDR & 0x07);
+}
 

@@ -4,7 +4,7 @@
  *  Created on: Dec 11, 2025
  *      Author: Admin
  */
-#include"stm32f1xx.h"
+
 /*
  * NOTE
  * EXTI Pending Register (EXTI-PR)
@@ -14,41 +14,33 @@
  * the corresponding PR bit is set to 1, indicating that an interrupt is waiting to be serviced.
  * =>To clear a pending bit, you must write a 1 to that bit (write-1-to-clear).
  * =>it understand intterupt if bit is set by hardware or software*/
+#include"main.h"
+volatile uint8_t hall_state;
+
+/* Common handler to avoid code duplication */
+static inline void hall_exti_handler(uint32_t pr_bit)
+{
+    if (EXTI->PR & pr_bit)
+    {
+        EXTI->PR = pr_bit;              // clear pending bit
+        hall_state = read_hall();       // read all 3 hall pins
+        commutation(hall_state);        // do commutation
+    }
+}
 
 void EXTI0_IRQHandler(void)
 {
-	if(EXTI->PR & EXTI_PR_PR0)
-	{
-		EXTI->PR = EXTI_PR_PR0;
-		hall_state=read_hall();
-		commutate(hall_state);
-	}
+    hall_exti_handler(EXTI_PR_PR0);
 }
 
 void EXTI1_IRQHandler(void)
 {
-	if(EXTI->PR & EXTI_PR_PR1)
-	{
-		EXTI->PR = EXTI_PR_PR1;
-		hall_state=read_hall();
-		commutate(hall_state);
-	}
+    hall_exti_handler(EXTI_PR_PR1);
 }
 
 void EXTI2_IRQHandler(void)
 {
-	if(EXTI->PR & EXTI_PR_PR2)
-	{
-		 EXTI->PR = EXTI_PR_PR2;
-		hall_state=read_hall();
-		commutate(hall_state);
-	}
+    hall_exti_handler(EXTI_PR_PR2);
 }
 
-//functions to read hall sensor state during interrupt
-inline uint8_t read_hall(void)
-{
-	return (uint8_t) (GPIOA->IDR & 0x07);    // only 3 bits 0b111 H3 H2 H1
-
-}
 

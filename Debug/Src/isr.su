@@ -1,0 +1,4 @@
+../Src/isr.c:21:20:hall_exti_handler	16	static
+../Src/isr.c:31:6:EXTI0_IRQHandler	8	static
+../Src/isr.c:36:6:EXTI1_IRQHandler	8	static
+../Src/isr.c:41:6:EXTI2_IRQHandler	8	static

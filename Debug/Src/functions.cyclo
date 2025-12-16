@@ -1,0 +1,3 @@
+../Src/functions.c:9:10:adc_read	2
+../Src/functions.c:20:10:pwm_mapping	2
+../Src/functions.c:36:9:read_hall	1

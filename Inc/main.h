@@ -9,6 +9,7 @@
 #define MAIN_H_
 
 #include "stm32f1xx.h"
+#include <stdint.h>
 
 //sectors macro
 #define SECTOR1	0b110
@@ -41,15 +42,28 @@ void adc_init(void);
 
 //functions protype
 uint16_t adc_read(void);
-void pwm_mapping(void);
-
+uint16_t pwm_mapping(void);
+uint8_t  read_hall(void);
 
 
 //commutation protypes
-static inline void low_sides_off(void);
-static inline void high_sides_off(void);
-inline uint8_t read_hall(void);
+
 void commutation(uint8_t hall);
+
+/* Turn OFF all low-side MOSFETs */
+static inline void low_sides_off(void)
+{
+    GPIOB->BRR = LS_OFF_A | LS_OFF_B | LS_OFF_C;
+}
+
+
+/* Disable all high-side PWM outputs */
+static inline void high_sides_off(void)
+{
+    TIM1->CCER &= ~(TIM_CCER_CC1E | TIM_CCER_CC2E | TIM_CCER_CC3E);
+}
+
+
 
 
 

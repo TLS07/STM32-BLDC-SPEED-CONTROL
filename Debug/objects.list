@@ -1,3 +1,7 @@
+"./Src/commutation.o"
+"./Src/functions.o"
+"./Src/init.o"
+"./Src/isr.o"
 "./Src/main.o"
 "./Src/syscalls.o"
 "./Src/sysmem.o"

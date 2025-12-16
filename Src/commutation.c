@@ -5,29 +5,6 @@
  *      Author: Admin
  */
 #include "main.h"
-
-/* Turn OFF all low-side MOSFETs */
-static inline void low_sides_off(void)
-{
-    GPIOB->BRR = LS_OFF_A | LS_OFF_B | LS_OFF_C;
-}
-
-
-/* Disable all high-side PWM outputs */
-static inline void high_sides_off(void)
-{
-    TIM1->CCER &= ~(TIM_CCER_CC1E | TIM_CCER_CC2E | TIM_CCER_CC3E);
-}
-
-
-
-/* Read hall states: PA0=HA, PA1=HB, PA2=HC */
-static inline uint8_t read_hall(void)
-{
-    return (GPIOA->IDR & 0x07);
-}
-
-
 //commutation acroding to the sectors
 void commutation(uint8_t hall)
 {
@@ -37,10 +14,19 @@ void commutation(uint8_t hall)
 	high_sides_off();
 	low_sides_off();
 
+	// Clear CCR registers to avoid glitches
 	TIM1->CCR1 = 0;
 	TIM1->CCR2 = 0;
 	TIM1->CCR3 = 0;
 
+	//ignore if very low duty
+	if(duty<50)
+	{
+		return ;
+	}
+
+
+	//commutation according state of hall sensors
 	switch (hall)
 	{
 
