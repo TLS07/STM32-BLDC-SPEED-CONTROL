@@ -1,3 +1,3 @@
-../Inc/main.h:54:20:low_sides_off	1
-../Inc/main.h:61:20:high_sides_off	1
-../Src/commutation.c:9:6:commutation	8
+../Inc/main.h:62:20:low_sides_off	1
+../Inc/main.h:69:20:high_sides_off	1
+../Src/commutation.c:10:6:commutation	8

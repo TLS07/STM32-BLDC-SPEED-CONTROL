@@ -18,9 +18,19 @@
 
 #include <stdint.h>
 #include "main.h"
-//#if !defined(__SOFT_FP__) && defined(__ARM_FP)
-//  #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
-//#endif
+
+volatile uint16_t duty_global=0;
+volatile uint32_t motor_rpm = 0;
+volatile uint32_t hall_pulse_count = 0;
+
+//PID varibles
+float Kp = 0.5f;
+float Ki = 0.2f;
+float Kd = 0.1f;
+
+float target_rpm = 0, prev_error = 0, integral = 0;
+
+
 
 int main(void)
 {
@@ -31,9 +41,35 @@ int main(void)
 	hall_sensor_init();				// EXTI for hall sensors
 	pwm_init();						// Timer 1 PWM initialize
 	adc_init();						// ADC for speed control
+	tim3_init();                    // Timer for speed calc
 
 	while(1)
 	{
+		//set speed from pot
+		uint16_t adc_val = adc_read();
+		target_rpm = (adc_val * MAX_RPM) / 4095.0f;
+
+
+		//PID calcution
+		float error =target_rpm -motor_rpm;
+
+		 if (duty_global < TIM1->ARR && duty_global > 0)
+		 {
+			 integral += error;
+			 if (integral > INTEGRAL_MAX) integral = INTEGRAL_MAX;
+			 if (integral < INTEGRAL_MIN) integral = INTEGRAL_MIN;
+		  }
+
+		int32_t derivate=error-prev_error;
+		int32_t pid_output=Kp*error + Ki*integral + Kd*derivate;
+
+
+		if(pid_output<0) pid_output = 0;
+		if(pid_output>TIM1->ARR) pid_output=TIM1->ARR;
+
+
+		duty_global=(uint16_t)pid_output;
+		prev_error=error;
 
 	}
 

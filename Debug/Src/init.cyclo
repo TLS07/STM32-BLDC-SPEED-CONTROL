@@ -4,3 +4,4 @@
 ../Src/init.c:101:6:low_side	1
 ../Src/init.c:122:6:pwm_init	1
 ../Src/init.c:178:6:adc_init	3
+../Src/init.c:209:6:tim3_init	1

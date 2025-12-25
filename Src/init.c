@@ -204,8 +204,23 @@ void adc_init(void)
 	 //calibration
 	 ADC1->CR2 |= ADC_CR2_CAL;
 	 while (ADC1->CR2 & ADC_CR2_CAL);
+}
 
+void tim3_init(void)
+{
+	//step 1 enbaling clock for timer3
+	RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
 
+	//step 2 set prescaler and autoreload value
+	TIM3->PSC = 7199;  // 72 MHz / (7199+1) = 10 kHz
+	TIM3->ARR = 499;   // 10 kHz / 500 = 20 Hz → 50 ms
+
+	//step 3 enable interrupt
+	TIM3->DIER |= TIM_DIER_UIE;
+	NVIC_EnableIRQ(TIM3_IRQn);
+
+	//step 4 start timer
+	TIM3->CR1 |= TIM_CR1_CEN;
 
 }
 

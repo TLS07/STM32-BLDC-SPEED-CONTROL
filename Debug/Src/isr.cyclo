@@ -1,4 +1,5 @@
-../Src/isr.c:21:20:hall_exti_handler	2
-../Src/isr.c:31:6:EXTI0_IRQHandler	1
-../Src/isr.c:36:6:EXTI1_IRQHandler	1
-../Src/isr.c:41:6:EXTI2_IRQHandler	1
+../Src/isr.c:23:20:hall_exti_handler	2
+../Src/isr.c:33:6:EXTI0_IRQHandler	3
+../Src/isr.c:50:6:EXTI1_IRQHandler	1
+../Src/isr.c:55:6:EXTI2_IRQHandler	1
+../Src/isr.c:63:6:TIM3_IRQHandler	2

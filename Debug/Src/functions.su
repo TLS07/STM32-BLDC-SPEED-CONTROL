@@ -1,3 +1,2 @@
 ../Src/functions.c:9:10:adc_read	4	static
-../Src/functions.c:20:10:pwm_mapping	16	static
-../Src/functions.c:36:9:read_hall	4	static
+../Src/functions.c:22:9:read_hall	4	static

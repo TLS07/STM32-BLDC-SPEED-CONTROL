@@ -11,6 +11,13 @@
 #include "stm32f1xx.h"
 #include <stdint.h>
 
+//Motor parameters
+#define POLE_PAIRS   4       // motor pole pairs
+#define SPEED_WINDOW_MS  50  // 50 ms window
+#define MAX_RPM     3000    // max RPM
+#define INTEGRAL_MAX	17995  //to limit intergal error below ARR
+#define INTEGRAL_MIN   -17995
+
 //sectors macro
 #define SECTOR1	0b110
 #define SECTOR2	0b100
@@ -39,6 +46,7 @@ void hall_sensor_init(void);
 void low_side(void);
 void pwm_init(void);
 void adc_init(void);
+void tim3_init(void);
 
 //functions protype
 uint16_t adc_read(void);

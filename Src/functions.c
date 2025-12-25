@@ -17,20 +17,6 @@ uint16_t adc_read(void)
 	return (uint16_t) ADC1->DR;        //readind Data register of adc it also clears eoc
 }
 
-uint16_t pwm_mapping(void){
-
-	uint16_t adc_value=adc_read();
-	if(adc_value>4095)
-	{
-		adc_value=4095;
-	}
-
-	//duty = (adc * PWM_MAX)/ADC_MAx
-	uint16_t duty=(adc_value*(TIM1->ARR))/4095;
-
-	return duty;
-
-}
 
 // Read hall states: PA0=HA, PA1=HB, PA2=HC
 uint8_t read_hall(void)

@@ -5,12 +5,14 @@
  *      Author: Admin
  */
 #include "main.h"
+extern volatile uint16_t duty_global;
 //commutation acroding to the sectors
 void commutation(uint8_t hall)
 {
-	uint16_t duty=pwm_mapping();
+	uint16_t duty=duty_global;
 
 	// Turn everything off first
+	TIM1->CCER &= ~(TIM_CCER_CC1E | TIM_CCER_CC2E | TIM_CCER_CC3E);
 	high_sides_off();
 	low_sides_off();
 
@@ -71,6 +73,12 @@ void commutation(uint8_t hall)
 		 TIM1->CCER |= TIM_CCER_CC3E;
 		 GPIOB->BSRR = LS_B;
 		 break;
+
+	default:       // Invalid hall state (000 / 111)
+		TIM1->CCER &= ~(TIM_CCER_CC1E | TIM_CCER_CC2E | TIM_CCER_CC3E);
+		low_sides_off();
+		break;
+
 
 	}
 }
