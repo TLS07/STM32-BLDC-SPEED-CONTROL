@@ -67,7 +67,7 @@ The project controls the speed of a BLDC motor using the **6-step (trapezoidal) 
    - Reads Hall sensors
    - Performs commutation
    - Measures speed
-   - Updates PWM via PI control  
+   - Updates PWM via PID control  
    ensuring stable and smooth motor operation.
 
 
