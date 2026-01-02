@@ -5,3 +5,4 @@
 ../Src/init.c:122:6:pwm_init	1
 ../Src/init.c:178:6:adc_init	3
 ../Src/init.c:209:6:tim3_init	1
+../Src/init.c:227:6:i2c2_init	1

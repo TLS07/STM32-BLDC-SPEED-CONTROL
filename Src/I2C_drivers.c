@@ -12,6 +12,7 @@
  * BTF    → write next data / STOP
  * STOP   → bus released
 */
+#include "main.h"
 
 void i2c2_start(void)
 {

@@ -53,6 +53,11 @@ uint16_t adc_read(void);
 uint16_t pwm_mapping(void);
 uint8_t  read_hall(void);
 
+//i2c function protypes
+void i2c2_start(void);
+void i2c2_send_addr(uint8_t addr,uint8_t rw);
+void i2c2_send_byte(uint8_t data);
+void i2c2_stop(void);
 
 //commutation protypes
 

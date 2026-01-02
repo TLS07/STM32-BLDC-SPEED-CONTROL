@@ -1,3 +1,4 @@
+"./Src/I2C_drivers.o"
 "./Src/commutation.o"
 "./Src/functions.o"
 "./Src/init.o"
