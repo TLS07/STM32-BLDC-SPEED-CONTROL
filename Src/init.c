@@ -224,4 +224,47 @@ void tim3_init(void)
 
 }
 
+void i2c2_init(void)
+{
+	/*using I2c2 PB10 SCL, PB11 SDA
+	 * SYSCLK=72 mhz
+	 * APB1=36mhz
+	 * I2c  speed =100khz
+	 */
+
+	//step 1 enabling clock for GPIOA and I2c2
+	RCC->APB2ENR|=RCC_APB2ENR_IOPBEN;
+	RCC->APB1ENR|=RCC_APB1ENR_I2C2EN;
+
+	//STEP 2 configuring PB10 PB11 as alternate function and open drain
+    /* Clear configuration first */
+    GPIOB->CRH &= ~(GPIO_CRH_MODE10 | GPIO_CRH_CNF10 |
+                    GPIO_CRH_MODE11 | GPIO_CRH_CNF11);
+
+    /* MODE = 11 (50 MHz), CNF = 11 (AF Open-Drain) */
+	GPIOB->CRH|=GPIO_CRH_MODE10_0|GPIO_CRH_MODE10_1;
+	GPIOB->CRH|=GPIO_CRH_CNF10_1|GPIO_CRH_CNF10_0;
+
+	GPIOB->CRH|=GPIO_CRH_MODE11_0|GPIO_CRH_MODE11_1;
+	GPIOB->CRH|=GPIO_CRH_CNF11_1|GPIO_CRH_CNF11_0;
+
+	/* step 3. Reset I2C2 */
+	I2C2->CR1 |=  I2C_CR1_SWRST;
+	I2C2->CR1 &= ~I2C_CR1_SWRST;
+
+	//step  4 Set APB1 frequency (in MHz)
+	I2C2->CR2=36;
+
+	//  step 5. Configure clock control for 100 kHz
+	//CCR=F_PCLK1/2*F_SCL
+	I2C2->CCR=0X140;
+
+	// step 6. Configure maximum rise time
+	//TRISE=FPCLK1​(MHz)+1
+	I2C2->TRISE = 37;
+
+    //step 7. Enable I2C2
+    I2C2->CR1 |= I2C_CR1_PE;
+
+}
 
