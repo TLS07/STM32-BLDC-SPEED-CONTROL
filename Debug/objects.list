@@ -3,6 +3,7 @@
 "./Src/functions.o"
 "./Src/init.o"
 "./Src/isr.o"
+"./Src/lcd_drivers.o"
 "./Src/main.o"
 "./Src/syscalls.o"
 "./Src/sysmem.o"

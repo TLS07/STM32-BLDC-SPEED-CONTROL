@@ -10,6 +10,8 @@
 
 #include "stm32f1xx.h"
 #include <stdint.h>
+#include <stdio.h>
+#include "LCD.h"
 
 //Motor parameters
 #define POLE_PAIRS   4       // motor pole pairs

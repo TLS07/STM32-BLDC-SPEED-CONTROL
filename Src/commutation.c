@@ -13,7 +13,6 @@ void commutation(uint8_t hall)
 
 	// Turn everything off first
 	TIM1->CCER &= ~(TIM_CCER_CC1E | TIM_CCER_CC2E | TIM_CCER_CC3E);
-	high_sides_off();
 	low_sides_off();
 
 	// Clear CCR registers to avoid glitches

@@ -42,7 +42,8 @@ int main(void)
 	pwm_init();						// Timer 1 PWM initialize
 	adc_init();						// ADC for speed control
 	tim3_init();                    // Timer for speed calc
-
+	lcd_init();						//lcd intialsiation
+	lcd_clear();					//clear display at start
 	while(1)
 	{
 		//set speed from pot
@@ -70,6 +71,9 @@ int main(void)
 
 		duty_global=(uint16_t)pid_output;
 		prev_error=error;
+
+		lcd_display_rpm(motor_rpm,(uint32_t)target_rpm);
+		for(unsigned short i=500;i--;);
 
 	}
 
