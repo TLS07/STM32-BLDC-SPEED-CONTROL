@@ -11,6 +11,7 @@ Hall-effect sensors provide rotor position feedback, and PWM signals control the
 - MOSFET-based inverter or gate driver
 - Power supply as per motor specification
 -  potentiometer for speed reference
+-  16×2 LCD with I²C module (PCF8574/PCF8574A)
 
 ## 💠Schematic diagram
 ![BLDC SCHEMATIC](SCHEMATIC.png)
@@ -29,6 +30,8 @@ Hall-effect sensors provide rotor position feedback, and PWM signals control the
 | PB4       | Low side B        |
 | PB5       | Low  side C       |
 | PA3       | ADC1 ch3(POT)     |
+| PB10      | I²C SCL           |
+| PB11      | I²C SDA           |
 
 
 ## 💠How the Project Works
@@ -58,21 +61,29 @@ The project controls the speed of a BLDC motor using the **6-step (trapezoidal) 
    This provides real-time speed feedback for closed-loop control.
 
 6. **PID Speed Controller**  
-   - The reference speed is set using a potentiometer or software variable.
+   - The reference speed is set using a potentiometer (ADC input).
    - The measured speed is compared with the reference speed.
    - A PID controller adjusts the PWM duty cycle to minimize speed error.
 
-7. **Continuous Operation**  
+7.**LCD Display (Speed Monitoring)**
+   A 16×2 I²C LCD is used to display motor speed information in real time:
+   - Line 1: Current motor speed (RPM)
+   - Line 2: Target/reference speed (RPM)
+
+
+8. **Continuous Operation**  
    The system continuously:
    - Reads Hall sensors
    - Performs commutation
    - Measures speed
    - Updates PWM via PID control  
-   ensuring stable and smooth motor operation.
+   - ensuring stable and smooth motor operation.
 
 ##  💠Note
+- For identifing hall reading for each sector , power any tw0 phase directly with 30% rated voltage , let rortor settle for two sencods , and take hall sensor reading, repeated this procces for othe phase combinations too.
 - refer ti refernece
 - refer BLDC 6 step commutation pdf
+- refer lcd datasheet
 
 
 
